@@ -2,16 +2,19 @@
   <li>
     <button @click="$emit('completeTask', task.id)"
       :class="className">
-      <i class="far fa-circle"></i>
+      <i :class=" this.task.completed
+        ? 'fa-solid fa-circle'
+        : 'far fa-circle'
+      "></i>
       {{ task.title }}
     </button>
 
     <div class="buttonGroup">
-      <button @click="$event => $emit('editTask', task.id)">
+      <button @click="handleEditTask">
         <i class="fa-regular fa-pen-to-square"></i>
       </button>
   
-      <button @click="$event => $emit('removeTask', task.id)">
+      <button @click="$emit('removeTask', task.id)">
         <i class="far fa-trash-alt"></i>
       </button>
     </div>
@@ -36,6 +39,12 @@ export default {
       }
 
       return classes
+    }
+  },
+  methods: {
+    handleEditTask() {
+      this.$emit('setIsModalOpen', true);
+      this.$emit('setModalTask', this.task);
     }
   }
 }
