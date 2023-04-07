@@ -144,6 +144,7 @@ task items
 
 .taskItems .toggle.toggle-completed {
   text-decoration: line-through;
+  color: #444444
 }
 
 .buttonGroup {
