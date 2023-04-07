@@ -7,7 +7,11 @@
       </div>
       <!-- form -->
       <div class="form">
-        <input type="text" placeholder="New Task" v-model="newTask" @keyup.enter="addTask" />
+        <input type="text" placeholder="New Task" 
+          ref="myInput"
+          v-model="newTask" 
+          v-focus 
+          @keyup.enter="addTask" />
         <button @click="addTask"><i class="fas fa-plus"></i></button>
       </div>
       <!-- task lists -->
@@ -20,6 +24,8 @@
             @editTask="editTask(task.id)"
             @removeTask="removeTask(task.id)"
             @completeTask="completeTask(task.id)"
+            @setIsModalOpen="setIsModalOpen(true)"
+            @setModalTask="setModalTask(task)"
           ></TaskItem>
         </ul>
       </div>
@@ -32,12 +38,20 @@
       <div class="pendingTasks">
         <span>Pending Tasks: {{ incomplete }} </span>
       </div>
+
     </div>
   </div>
+  <TaskModal ref="taskModal"
+    @editTask="editTask" 
+    :task="modalTask">
+  </TaskModal>
+
 </template>
 
 <script>
-import TaskItem from './TaskItem.vue'
+import TaskItem from './TaskItem.vue';
+import TaskModal from './TaskModal/index.vue';
+
 import { v4 as uuidv4 } from 'uuid';
 
 export default {
@@ -57,9 +71,17 @@ export default {
     return {
       newTask: '',
       tasks: this.preTasks,
+      isModalOpen: false,
+      modalTask: {},
     }
   },
   methods: {
+    setModalTask(task) {
+      this.modalTask = task;
+    },
+    setIsModalOpen(value) {
+      this.$refs.taskModal.isOpen = value;
+    },
     findById(id) {
       const element = this.tasks.find(el => el.id === id);
 
@@ -89,12 +111,6 @@ export default {
         1
       );
     },
-    editTask(id) {
-      const element = this.findById(id);
-
-      console.log(element)
-    },
-
     clearCompleted() {
       this.tasks = this.tasks.filter((task) => !task.completed);
     },
@@ -106,9 +122,18 @@ export default {
       const index = this.locateIndexOfTask(element);
       
       this.tasks[index].completed = !this.tasks[index].completed;
+    },
+    editTask(task) {
+      const element = this.findById(task.id);
+      const index = this.locateIndexOfTask(element);
+
+      this.tasks[index].title = task.title;
     }
   },
-  components: { TaskItem }
+  mounted() {
+    this.$refs.myInput.focus();
+  },
+  components: { TaskItem, TaskModal }
 }
 </script>
 
