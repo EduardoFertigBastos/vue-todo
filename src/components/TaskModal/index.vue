@@ -1,3 +1,59 @@
+<script setup>
+  import './style.css';
+  import { nextTick, defineProps, ref, watch } from 'vue';
+
+  const emits = defineEmits(['editTask', 'focusInput'])
+
+  const props = defineProps({
+    task: {
+      type: Object,
+      default: () => {
+        return {
+          id: '',
+          title: '',
+          completed: false
+        }
+      }
+    }
+  });
+  
+  const isOpen = ref(false);
+  const taskTitleInput = ref();
+
+  function closeModal() {
+    isOpen.value = false;
+    emits('focusInput');
+  }
+
+  function handleClickBackground(event) {
+    if (event.target == event.currentTarget) {
+      closeModal();
+    }
+  }
+
+  function editTask() {
+    const taskEdited = {
+      ...props.task,
+      title: taskTitleInput.value.value
+    };
+
+    emits('editTask', taskEdited);
+    closeModal();
+  }
+
+  watch(isOpen, (value) => {
+    if (value) {
+      nextTick(() => {
+        taskTitleInput.value.focus();
+      });
+    }
+  });
+
+  defineExpose({
+    isOpen,
+  });
+</script>
+
 <template>
 
   <div class="model-background" 
@@ -43,56 +99,3 @@
   </div>
 
 </template>
-
-<script>
-import './style.css';
-
-export default {
-  name: 'TaskModal',
-  props: {
-    task: {
-      type: Object,
-      default: () => {
-        return {
-          id: '',
-          title: '',
-          completed: false
-        }
-      }
-    },   
-  },
-  data() {
-    return {
-      isOpen: false,
-      taskTitle: this.task.title
-    };
-  },
-  computed: {
-  },
-  methods: {
-    openModal() {
-      console.log('abc')
-      this.isOpen = true;
-      this.$refs.taskTitleInput.focus();
-    },
-    closeModal() {
-      console.log('aaaaaaaaaaaaaaaaaa goooo')
-      this.isOpen = false;
-    },
-    handleClickBackground(event) {
-      if (event.target == event.currentTarget) {
-        this.closeModal();
-      }
-    },
-    editTask() {
-      const taskEdited = {
-        ...this.task,
-        title: this.$refs.taskTitleInput.value
-      };
-
-      this.$emit('editTask', taskEdited);
-      this.closeModal();
-    }
-  },
-}
-</script>
