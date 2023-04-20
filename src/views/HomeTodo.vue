@@ -1,5 +1,6 @@
 <script setup>
   import TodoList from '../components/TodoList.vue'
+  // import '../assets/todo.css'
   import { v4 as uuidv4 } from 'uuid';
 
   const tasks = [
@@ -26,3 +27,4 @@
     <TodoList :tasks="tasks" />
   </main>
 </template>
+

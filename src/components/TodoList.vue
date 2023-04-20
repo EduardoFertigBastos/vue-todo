@@ -2,8 +2,6 @@
   import TaskItem from './TaskItem.vue';
   import TaskModal from './TaskModal/index.vue';
 
-  import { v4 as uuidv4 } from 'uuid';
-
   import { defineProps, ref, computed, onMounted } from 'vue';
   
   const props = defineProps({
@@ -42,7 +40,7 @@
   function addTask() {
     if (newTask.value) {
       tasks.value.push({
-        id: uuidv4(),
+        id: new Date().getTime(),
         title: newTask.value,
         completed: false,
       });
